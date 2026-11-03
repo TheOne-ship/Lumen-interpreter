@@ -114,6 +114,12 @@ class Functions(unittest.TestCase):
         with self.assertRaises(LumenRuntimeError):
             run("fn f() { break; } for (i in [1]) { f(); }")
 
+    def test_time_limit_stops_infinite_loop(self):
+        from lumen import Interpreter
+        with self.assertRaises(LumenRuntimeError) as ctx:
+            Interpreter(write=lambda s: None, time_limit=0.2).run("let i = 0; while (true) { i = i + 1; }")
+        self.assertIn("Time limit exceeded", str(ctx.exception))
+
     def test_calling_non_function(self):
         with self.assertRaises(LumenRuntimeError):
             run("let x = 5; x();")

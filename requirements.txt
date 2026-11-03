@@ -1,0 +1,2 @@
+# Only the web playground needs this; the interpreter itself uses the standard library.
+flask>=3.0

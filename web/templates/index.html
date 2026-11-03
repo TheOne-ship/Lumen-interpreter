@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lumen Playground</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23f5b544'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <h1>Lumen <span>Playground</span></h1>
+    </div>
+    <div class="actions">
+      <button id="run-btn" class="btn primary" title="Run (Ctrl+Enter)">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg>Run
+      </button>
+      <button id="save-btn" class="btn" title="Save and get a share link (Ctrl+S)">Save &amp; Share</button>
+      <button id="clear-btn" class="btn ghost" title="Clear the output">Clear</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <section>
+        <h2>Examples</h2>
+        <ul id="examples" class="list"><li class="muted">Loading…</li></ul>
+      </section>
+      <section>
+        <h2>Saved programs</h2>
+        <ul id="saved" class="list"><li class="muted">Loading…</li></ul>
+      </section>
+      <section class="help">
+        <h2>Shortcuts</h2>
+        <p><kbd>Ctrl</kbd>+<kbd>Enter</kbd> run</p>
+        <p><kbd>Ctrl</kbd>+<kbd>S</kbd> save</p>
+        <p><kbd>Tab</kbd> indent</p>
+      </section>
+    </aside>
+
+    <section class="panel editor-panel">
+      <div class="panel-head">
+        <span id="file-label">untitled.lm</span>
+        <span id="cursor-pos" class="muted">Ln 1, Col 1</span>
+      </div>
+      <div class="editor">
+        <div class="gutter" id="gutter" aria-hidden="true"></div>
+        <div class="code-wrap">
+          <pre class="highlight" aria-hidden="true"><code id="highlight"></code></pre>
+          <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off"
+                    wrap="off" aria-label="Lumen source code"></textarea>
+        </div>
+      </div>
+      <div class="input-box">
+        <label for="stdin">Input <span class="muted">(one line per <code>input()</code> call)</span></label>
+        <textarea id="stdin" rows="2" spellcheck="false" placeholder="e.g. Asha"></textarea>
+      </div>
+    </section>
+
+    <section class="panel output-panel">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="output" role="tab">Output</button>
+        <button class="tab" data-tab="tokens" role="tab">Tokens</button>
+        <button class="tab" data-tab="ast" role="tab">Syntax tree</button>
+      </div>
+      <div class="tab-body" id="tab-output"><div id="output" class="console"><span class="muted">Press Run to execute your program.</span></div></div>
+      <div class="tab-body hidden" id="tab-tokens"><div id="tokens" class="scroll"></div></div>
+      <div class="tab-body hidden" id="tab-ast"><div id="ast" class="scroll tree"></div></div>
+      <div class="status" id="status">Ready</div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

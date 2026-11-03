@@ -6,6 +6,9 @@ __pycache__/
 venv/
 .pytest_cache/
 
+# Playground database (created on first run)
+*.db
+
 # Editors / OS
 .vscode/
 .idea/

@@ -1,6 +1,7 @@
 """Tree-walking interpreter: executes the AST produced by the parser."""
 
 import sys
+import time
 
 from . import ast_nodes as ast
 from .builtins import BUILTINS
@@ -30,9 +31,14 @@ class ContinueSignal(Exception):
 
 
 class Interpreter:
-    def __init__(self, write=None, read=None):
+    def __init__(self, write=None, read=None, time_limit=None):
+        """time_limit: maximum seconds a run may take (None = no limit).
+        The web playground sets it so `while (true) {}` cannot hang the server."""
         self.write = write or print
         self.read = read or input
+        self.time_limit = time_limit
+        self.deadline = None
+        self.steps = 0
         self.globals = Environment()
         for b in BUILTINS:
             self.globals.define(b.name, b)
@@ -45,13 +51,26 @@ class Interpreter:
         """Lex, parse and execute source code. Returns the value of the
         last expression statement (used by the REPL to echo results)."""
         program = parse(tokenize(source))
+        if self.time_limit is not None:
+            self.deadline = time.perf_counter() + self.time_limit
         result = None
         for stmt in program:
             result = self.execute(stmt, self.globals)
         return result
 
+    def tick(self, line):
+        """Called on every statement and loop iteration to enforce the time limit.
+        The clock is only read every 1000 steps to keep this cheap."""
+        self.steps += 1
+        if self.deadline is not None and self.steps % 1000 == 0 \
+                and time.perf_counter() > self.deadline:
+            raise LumenRuntimeError(
+                f"Time limit exceeded ({self.time_limit:g} s): "
+                f"is there an infinite loop?", line)
+
     # ---- statements ----------------------------------------------------
     def execute(self, node, env):
+        self.tick(getattr(node, "line", None))
         method = getattr(self, "exec_" + type(node).__name__)
         return method(node, env)
 
@@ -80,6 +99,7 @@ class Interpreter:
         self.loop_depth += 1
         try:
             while is_truthy(self.evaluate(node.condition, env)):
+                self.tick(node.line)
                 try:
                     self.execute(node.body, env)
                 except BreakSignal:
