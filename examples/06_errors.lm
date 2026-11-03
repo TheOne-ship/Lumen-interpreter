@@ -1,0 +1,8 @@
+# Lumen reports errors with the line number and a helpful message.
+# Run this file to see a runtime error being reported.
+
+let marks = [90, 85, 77];
+print("Marks:", marks);
+print("Third mark:", marks[2]);
+print("Fourth mark:", marks[3]);   # index 3 does not exist -> error
+print("This line never runs");

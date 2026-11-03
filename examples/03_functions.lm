@@ -1,0 +1,67 @@
+# Functions: recursion, closures and higher-order functions
+
+# --- Recursion ---
+fn factorial(n) {
+    if (n <= 1) { return 1; }
+    return n * factorial(n - 1);
+}
+
+fn fib(n) {
+    if (n < 2) { return n; }
+    return fib(n - 1) + fib(n - 2);
+}
+
+print("factorial(10) =", factorial(10));
+print("First 10 Fibonacci numbers:");
+let fibs = [];
+for (i in range(10)) { push(fibs, fib(i)); }
+print(fibs);
+
+# --- Closures: each counter remembers its own count ---
+fn make_counter() {
+    let count = 0;
+    return fn () {
+        count = count + 1;
+        return count;
+    };
+}
+
+let a = make_counter();
+let b = make_counter();
+a(); a();
+print("Counter a:", a(), " Counter b:", b());
+
+# --- Higher-order functions written in Lumen itself ---
+fn map(list, f) {
+    let out = [];
+    for (x in list) { push(out, f(x)); }
+    return out;
+}
+
+fn filter(list, keep) {
+    let out = [];
+    for (x in list) {
+        if (keep(x)) { push(out, x); }
+    }
+    return out;
+}
+
+fn reduce(list, f, start) {
+    let acc = start;
+    for (x in list) { acc = f(acc, x); }
+    return acc;
+}
+
+let nums = range(1, 11);
+let squares = map(nums, fn (x) { return x * x; });
+let evens = filter(nums, fn (x) { return x % 2 == 0; });
+let total = reduce(nums, fn (acc, x) { return acc + x; }, 0);
+
+print("Numbers:", nums);
+print("Squares:", squares);
+print("Evens:  ", evens);
+print("Sum:    ", total);
+
+# Functions are values: store them in a list
+let ops = [fn (x, y) { return x + y; }, fn (x, y) { return x * y; }];
+print("ops[0](3, 4) =", ops[0](3, 4), " ops[1](3, 4) =", ops[1](3, 4));

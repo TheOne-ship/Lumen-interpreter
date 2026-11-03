@@ -1,0 +1,4 @@
+# My first Lumen program
+let name = "World";
+print("Hello, " + name + "!");
+print("Lumen can do maths too:", 6 * 7);

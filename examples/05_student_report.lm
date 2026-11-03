@@ -1,0 +1,53 @@
+# A small practical program: student marks report
+
+let names = ["Ananya", "Bharath", "Chetan", "Divya", "Esha"];
+let marks = [
+    [88, 92, 79],
+    [65, 70, 58],
+    [95, 98, 91],
+    [45, 52, 38],
+    [76, 81, 85]
+];
+
+fn average(list) {
+    let sum = 0;
+    for (m in list) { sum = sum + m; }
+    return sum / len(list);
+}
+
+fn grade(avg) {
+    if (avg >= 90) { return "S"; }
+    if (avg >= 80) { return "A"; }
+    if (avg >= 70) { return "B"; }
+    if (avg >= 60) { return "C"; }
+    if (avg >= 50) { return "D"; }
+    return "F";
+}
+
+fn pad(text, width) {
+    let s = str(text);
+    while (len(s) < width) { s = s + " "; }
+    return s;
+}
+
+fn round2(x) {
+    return int(x * 100 + 0.5) / 100;
+}
+
+print("STUDENT MARKS REPORT");
+print("=" * 44);
+print(pad("Name", 10) + pad("Marks", 18) + pad("Avg", 9) + "Grade");
+print("-" * 44);
+
+let best = 0;
+let class_total = 0;
+for (i in range(len(names))) {
+    let avg = average(marks[i]);
+    class_total = class_total + avg;
+    if (avg > average(marks[best])) { best = i; }
+    print(pad(names[i], 10) + pad(join(marks[i], ", "), 18)
+          + pad(round2(avg), 9) + grade(avg));
+}
+print("-" * 44);
+print("Class average:", round2(class_total / len(names)));
+print("Topper:", names[best]);
